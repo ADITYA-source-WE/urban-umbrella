@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        /* All the same CSS styles as before */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe6e9 100%);
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 70vh;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(255,105,180,0.4));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Memory Gallery */
+        .memories-section {
+            margin: 60px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #d63384;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #ff4081, transparent);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .memory-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+            min-height: 300px;
+        }
+
+        .memory-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.3);
+        }
+
+        .memory-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 1px solid #ffe6e9;
+        }
+
+        .memory-caption {
+            padding: 15px;
+            font-style: italic;
+            color: #666;
+            background: white;
+        }
+
+        /* Photo Placeholder Style */
+        .photo-placeholder {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #ffe6e9, #ffccd5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #d63384;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #ffe6e9;
+        }
+
+        .photo-placeholder span {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* Debug Info */
+        .debug-info {
+            background: #fff0f6;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ff4081;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Message Section */
+        .message-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            line-height: 1.8;
+            font-size: 1.2rem;
+        }
+
+        .message-section p {
+            margin-bottom: 20px;
+        }
+
+        /* Button Section */
+        .buttons-section {
+            text-align: center;
+            margin: 60px 0;
+            padding: 40px;
+            position: relative;
+        }
+
+        .question {
+            font-size: 2.5rem;
+            color: #d63384;
+            margin-bottom: 40px;
+        }
+
+        .yes-button {
+            background: linear-gradient(45deg, #ff4081, #ff6b9d);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 64, 129, 0.3);
+            margin-right: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .yes-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(255, 64, 129, 0.4);
+        }
+
+        .no-button {
+            background: linear-gradient(45deg, #6c757d, #868e96);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+            position: absolute;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .no-message {
+            margin-top: 20px;
+            color: #ff4081;
+            font-style: italic;
+            font-size: 1.2rem;
+            min-height: 30px;
+        }
+
+        /* Celebration - SIMPLIFIED (no date planner) */
+        #celebration {
+            display: none;
+            text-align: center;
+            padding: 60px;
+            background: linear-gradient(135deg, #fff0f6, #ffe6e9);
+            border-radius: 20px;
+            margin: 40px 0;
+            animation: fadeIn 1s ease;
+            border: 3px solid #ff4081;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .celebration-title {
+            font-size: 3.5rem;
+            color: #ff4081;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .celebration-text {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            color: #555;
+        }
+
+        /* Simple celebration message */
+        .celebration-message {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .celebration-message h3 {
+            color: #d63384;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .celebration-message p {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .heart-emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            border-top: 1px solid #ffe6e9;
+            margin-top: 40px;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4081;
+            top: 0;
+            opacity: 0;
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 24px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .yes-button, .no-button {
+                padding: 15px 30px;
+                font-size: 1.5rem;
+                margin: 10px;
+            }
+            
+            .question {
+                font-size: 2rem;
+            }
+            
+            .celebration-title {
+                font-size: 2.5rem;
+            }
+            
+            .celebration-text {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Debug Information -->
+        <div class="debug-info" id="debugInfo">
+            <strong>Photo Status:</strong> Checking for photos...
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <!-- Photo will be loaded here by JavaScript -->
+            <div id="heroImage" class="photo-placeholder">
+                <span>❤️</span>
+                Loading memory1.jpg...
+            </div>
+            <div class="hero-overlay">
+                <h1 class="hero-title">Annu my baby</h1>
+                <p class="hero-subtitle">Every memory with you is a treasure I hold close to my heart</p>
+            </div>
+        </section>
+
+        <!-- Memories Gallery -->
+        <section class="memories-section">
+            <h2 class="section-title">Our Beautiful Journey</h2>
+            <div class="gallery" id="photoGallery">
+                <!-- Photos will be loaded here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Personal Message -->
+        <section class="message-section">
+            <p>My babyyyy,</p>
+            
+            <p>Looking through these photos, I'm reminded of how incredibly special every moment with you was. I know we've been apart, but my heart has never stopped longing for you. The laughter, the adventures, the quiet moments - they're all etched in my memory.</p>
+            
+            <p>I miss you more than words can express. I miss your smile, your voice, the way you made ordinary moments extraordinary. I've had time to reflect, and I realize now what I should have valued more when I had it - you.</p>
+            
+            <p>This Valentine's Day, I'm not just asking for a date. I'm asking for a chance - a chance to rebuild what was beautiful, to learn from our past, and to create new memories that are even more precious than these.</p>
+            
+            <p>You've always been the one who understood me, who saw me for who I am, and who I want to share my life with. I believe in us, in what we had, and in what we could build together.</p>
+            
+            <p>With all my love and hope,</p>
+            <p style="margin-top: 20px; font-weight: bold;">your adii</p>
+        </section>
+
+        <!-- Buttons Section -->
+        <section class="buttons-section">
+            <h2 class="question">Will You Be My Valentine?</h2>
+            <button class="yes-button" id="yesBtn">YES, My Valentine ❤️</button>
+            <button class="no-button" id="noBtn">NO</button>
+            <div class="no-message" id="noMessage"></div>
+        </section>
+
+        <!-- Celebration Section - SIMPLIFIED (no date planner) -->
+        <section id="celebration">
+            <h2 class="celebration-title">You've Made Me So Happy! ❤️</h2>
+            <p class="celebration-text">This is the beginning of our beautiful new chapter together!</p>
+            <div class="celebration-message">
+                <div class="heart-emoji">💖</div>
+                <h3>My Heart is Overflowing with Joy!</h3>
+                <p>Thank you for giving us another chance. I promise to cherish every moment with you and make every day as special as Valentine's Day.</p>
+                <p>I can't wait to see you and start creating new memories together. You've just made this the happiest day of my life!</p>
+                <div class="heart-emoji">💕</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            Made with hope, love, and endless devotion
+        </footer>
+    </div>
+
+    <!-- Confetti and Hearts Elements -->
+    <div id="confettiContainer"></div>
+    <div id="heartsContainer"></div>
+
+    <script>
+        // Photo configuration
+        const photos = [
+            { id: 'hero', filename: 'memory1.jpg', caption: 'Our Special Memory' },
+            { filename: 'memory2.jpg', caption: 'A moment of pure joy together' },
+            { filename: 'memory3.jpg', caption: 'Your smile lights up my world' },
+            { filename: 'memory4.jpg', caption: 'Every second with you was magical' },
+            { filename: 'memory5.jpg', caption: 'You\'re my favorite adventure' },
+            { filename: 'memory6.jpg', caption: 'My heart found its home in you' }
+        ];
+
+        // Debug information
+        const debugInfo = document.getElementById('debugInfo');
+        const photoGallery = document.getElementById('photoGallery');
+        let loadedPhotos = 0;
+        let failedPhotos = 0;
+
+        // Function to load a photo with error handling
+        function loadPhoto(photo, index, isHero = false) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function() {
+                    loadedPhotos++;
+                    updateDebugInfo();
+                    resolve({ success: true, element: img, photo });
+                };
+                img.onerror = function() {
+                    failedPhotos++;
+                    updateDebugInfo();
+                    // Create placeholder instead
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'photo-placeholder';
+                    placeholder.innerHTML = `
+                        <span>📷</span>
+                        ${photo.filename}<br>
+                        <small>Photo not found</small>
+                    `;
+                    resolve({ success: false, element: placeholder, photo });
+                };
+                img.src = photo.filename;
+                img.alt = photo.caption;
+                img.className = 'memory-image';
+                
+                // Set a timeout to detect if image takes too long
+                setTimeout(() => {
+                    if (!img.complete) {
+                        img.onerror();
+                    }
+                }, 2000);
+            });
+        }
+
+        // Update debug information
+        function updateDebugInfo() {
+            debugInfo.innerHTML = `
+                <strong>Photo Status:</strong> 
+                ${loadedPhotos} loaded, ${failedPhotos} failed<br>
+                <small>Make sure memory1.jpg through memory6.jpg are in the same folder as this HTML file</small>
+            `;
+        }
+
+        // Load all photos
+        async function loadAllPhotos() {
+            // Load hero photo
+            const heroResult = await loadPhoto(photos[0], 0, true);
+            const heroContainer = document.getElementById('heroImage');
+            
+            if (heroResult.success) {
+                heroContainer.parentNode.replaceChild(heroResult.element, heroContainer);
+                heroResult.element.className = 'hero-image';
+            } else {
+                heroContainer.innerHTML = `
+                    <span>📷</span>
+                    Could not load hero photo<br>
+                    <small>Place memory1.jpg in the same folder</small>
+                `;
+            }
+
+            // Load gallery photos
+            for (let i = 1; i < photos.length; i++) {
+                const result = await loadPhoto(photos[i], i);
+                
+                const memoryCard = document.createElement('div');
+                memoryCard.className = 'memory-card';
+                
+                if (result.success) {
+                    memoryCard.appendChild(result.element);
+                } else {
+                    memoryCard.appendChild(result.element);
+                }
+                
+                const caption = document.createElement('p');
+                caption.className = 'memory-caption';
+                caption.textContent = photos[i].caption;
+                memoryCard.appendChild(caption);
+                
+                photoGallery.appendChild(memoryCard);
+            }
+        }
+
+        // Initialize photo loading
+        loadAllPhotos().then(() => {
+            console.log('All photos loaded');
+        });
+
+        // Moving NO button functionality
+        const noBtn = document.getElementById('noBtn');
+        const noMessage = document.getElementById('noMessage');
+        const messages = [
+            "Are you sure?",
+            "Think about our memories!",
+            "Give us another chance?",
+            "My heart is begging you...",
+            "The heart wants what it wants!",
+            "Please reconsider?",
+            "I really miss you...",
+            "Our story isn't over yet!",
+            "Try clicking YES instead!",
+            "You know we belong together ❤️"
+        ];
+
+        // Make NO button move when hovered
+        noBtn.addEventListener('mouseover', function() {
+            moveNoButton();
+            showRandomMessage();
+        });
+
+        // Also move when trying to click
+        noBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            moveNoButton();
+            showRandomMessage();
+        });
+
+        function moveNoButton() {
+            const maxX = window.innerWidth - noBtn.offsetWidth - 50;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 50;
+            
+            const randomX = Math.max(50, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(50, Math.floor(Math.random() * maxY));
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            
+            // Add slight rotation for fun
+            const rotation = Math.random() * 20 - 10;
+            noBtn.style.transform = `rotate(${rotation}deg)`;
+        }
+
+        function showRandomMessage() {
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            noMessage.textContent = messages[randomIndex];
+            noMessage.style.opacity = '1';
+            
+            // Fade out message after 2 seconds
+            setTimeout(() => {
+                noMessage.style.opacity = '0.5';
+            }, 2000);
+        }
+
+        // YES button functionality - SIMPLIFIED (no date planner)
+        const yesBtn = document.getElementById('yesBtn');
+        const celebration = document.getElementById('celebration');
+
+        yesBtn.addEventListener('click', function() {
+            // Hide the buttons section
+            document.querySelector('.buttons-section').style.display = 'none';
+            
+            // Show celebration section with animation
+            celebration.style.display = 'block';
+            
+            // Scroll to celebration
+            celebration.scrollIntoView({ behavior: 'smooth' });
+            
+            // Create celebration effects
+            createConfetti();
+            createHearts();
+            
+            // Show success message
+            setTimeout(() => {
+                alert("Thank you! You've made me the happiest person in the world! ❤️\nI can't wait to see you and start our new journey together!");
+            }, 1000);
+        });
+
+        function createConfetti() {
+            const colors = ['#ff4081', '#ff6b9d', '#ff8fab', '#ffb3c6', '#ffccd5'];
+            const confettiContainer = document.getElementById('confettiContainer');
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                
+                confettiContainer.appendChild(confetti);
+                
+                // Animation
+                const animation = confetti.animate([
+                    { top: '0px', opacity: 1, transform: 'rotate(0deg)' },
+                    { top: '100vh', opacity: 0, transform: `rotate(${Math.random() * 720}deg)` }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        function createHearts() {
+            const heartEmojis = ['❤️', '💖', '💕', '💗', '💓', '💞', '💘', '💝'];
+            const heartsContainer = document.getElementById('heartsContainer');
+            
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = Math.random() * 30 + 20 + 'px';
+                
+                heartsContainer.appendChild(heart);
+                
+                // Animation
+                const animation = heart.animate([
+                    { top: '100vh', opacity: 1, transform: 'scale(1)' },
+                    { top: '-50px', opacity: 0, transform: 'scale(1.5)' }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                });
+                
+                animation.onfinish = () => heart.remove();
+            }
+        }
+
+        // Optional: Add keyboard controls for NO button
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.key === 'n' || e.key === 'N') {
+                moveNoButton();
+                showRandomMessage();
+            }
+        });
+
+        // Initialize NO button position
+        setTimeout(() => {
+            moveNoButton();
+        }, 100);
+    </script>
+</body>
+</html>
